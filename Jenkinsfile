@@ -4,23 +4,22 @@ pipeline {
             label 'maven-slave'
         }
     }
-    environment{
+    environment {
         PATH = "/opt/apache-maven-3.9.10/bin:$PATH"
     }
     stages {
-        stage('build') {
+        stage('Build') {
             steps {
                 sh 'mvn clean install -DskipTests'
             }
         }
-          stage
-            steps{
-          ('SonarQube analysis') {
-                withSonarQubeEnv(credentialsId: 'sonar-token', installationName: 'sonar-server') { // You can override the credential to be used, If you have configured more than one global server connection, you can specify the corresponding SonarQube installation name configured in Jenkins
-                sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.11.0.3922:sonar'
+        stage('SonarQube analysis') {  // Correctly placed stage block
+            steps {
+                withSonarQubeEnv(credentialsId: 'sonar-token', installationName: 'sonar-server') {
+                    sh 'mvn org.sonarsource.scanner.maven:sonar-maven-plugin:3.11.0.3922:sonar'
                 }
-          }
             }
+        }
         stage('Hello3') {
             steps {
                 echo 'Hello World'
